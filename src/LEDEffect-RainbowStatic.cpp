@@ -17,12 +17,25 @@ namespace kaleidoscope {
 namespace plugin {
 
 void LEDRainbowStaticEffect::onActivate(void) {
+  activate_millis = Kaleidoscope.millisAtCycleStart();
+}
+
+void LEDRainbowStaticEffect::update(void) {
   for (int8_t i = 0; i < LED_COUNT; i++) {
     uint16_t key_hue = rainbow_start_hue + (rainbow_end_hue * 4 / LED_COUNT) * (i / 4);
     if (key_hue >= 255)          {
       key_hue -= 255;
     }
-    cRGB rainbow = hsvToRgb(key_hue, rainbow_saturation, rainbow_value);
+
+    uint32_t delta = Kaleidoscope.millisAtCycleStart() - activate_millis;
+    byte value;
+    if (delta > ramp_time) {
+      value = rainbow_value;
+    } else {
+      value = rainbow_value * delta / ramp_time;
+    }
+
+    cRGB rainbow = hsvToRgb(key_hue, rainbow_saturation, value);
     ::LEDControl.setCrgbAt(i, rainbow);
   }
 }

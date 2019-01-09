@@ -35,6 +35,7 @@ class LEDRainbowStaticEffect : public LEDMode {
     return rainbow_value;
   }
   void onActivate(void) final;
+  void update(void) final;
 
  private:
   uint16_t rainbow_start_hue = 0;  //  stores 0 to 614
@@ -42,6 +43,8 @@ class LEDRainbowStaticEffect : public LEDMode {
 
   byte rainbow_saturation = 255;
   byte rainbow_value = 50;
+  uint32_t activate_millis = 0;
+  uint16_t ramp_time = 1000;
 };
 }
 }
